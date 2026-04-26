@@ -1,24 +1,31 @@
 from collections import Counter
 
 
-def calculer_degats(des):
+def evaluer_main(des):
     compte = Counter(des)
     valeurs = sorted(compte.values(), reverse=True)
-    des_uniques = sorted(set(des))
-    est_suite = len(des_uniques) == 5 and (des_uniques[-1] - des_uniques[0] == 4)
+    uniques = sorted(set(des))
+    est_suite = len(uniques) == 5 and (uniques[-1] - uniques[0] == 4)
 
     if valeurs == [5]:
-        return "YAHTZEE", 50
+        return "FIVE OF A KIND", 120, 12
+    if valeurs[0] == 4:
+        return "FOUR OF A KIND", 60, 7
     if est_suite:
-        return "GRANDE SUITE", 35
-    if valeurs == [4, 1]:
-        return "CARRÉ", 25
+        return "STRAIGHT", 50, 5
     if valeurs == [3, 2]:
-        return "FULL HOUSE", 20
-    if valeurs == [3, 1, 1]:
-        return "BRELAN", 15
-    if valeurs == [2, 2, 1]:
-        return "DOUBLE PAIRE", 10
-    if valeurs == [2, 1, 1, 1]:
-        return "PAIRE", 5
-    return "CARTE HAUTE", 2
+        return "FULL HOUSE", 40, 4
+    if valeurs[0] == 3:
+        return "THREE OF A KIND", 30, 3
+    if valeurs[:2] == [2, 2]:
+        return "TWO PAIR", 20, 2
+    if valeurs[0] == 2:
+        return "PAIR", 10, 2
+    return "HIGH CARD", 5, 1
+
+
+def calculer_score(des):
+    nom, chips_base, multi = evaluer_main(des)
+    somme_des = sum(des)
+    score = (chips_base + somme_des) * multi
+    return nom, chips_base, somme_des, multi, score
